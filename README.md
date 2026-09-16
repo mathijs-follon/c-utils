@@ -24,12 +24,12 @@ Link against `utils::utils` (static by default).
 ### Submodule
 
 ```bash
-git submodule add git@github.com:mathijs-follon/c-utils.git third_party/utils
+git submodule add git@github.com:mathijs-follon/c-utils.git third_party/c_utils
 git submodule update --init --recursive
 ```
 
 ```cmake
-add_subdirectory(third_party/utils)
+add_subdirectory(third_party/c_utils)
 target_link_libraries(your_app PRIVATE utils::utils)
 ```
 
