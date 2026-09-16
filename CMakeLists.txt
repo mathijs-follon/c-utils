@@ -137,11 +137,15 @@ foreach(target IN LISTS UTILS_TARGETS)
             PRIVATE
                 "${CMAKE_CURRENT_SOURCE_DIR}/src/alloc/tlsf"
         )
-        set_source_files_properties(
-            "${CMAKE_CURRENT_SOURCE_DIR}/src/alloc/tlsf/tlsf.c"
-            PROPERTIES
-                COMPILE_FLAGS "-Wno-conversion -Wno-sign-conversion -Wno-pedantic"
-        )
+        # Vendored TLSF is not warning-clean under GCC/Clang -Wconversion.
+        # Do not pass -Wno-* to MSVC (cl rejects them as invalid numeric args).
+        if(CMAKE_C_COMPILER_ID MATCHES "GNU|Clang")
+            set_source_files_properties(
+                "${CMAKE_CURRENT_SOURCE_DIR}/src/alloc/tlsf/tlsf.c"
+                PROPERTIES
+                    COMPILE_FLAGS "-Wno-conversion -Wno-sign-conversion -Wno-pedantic"
+            )
+        endif()
     else()
         target_compile_definitions(${target}
             PUBLIC

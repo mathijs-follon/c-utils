@@ -35,7 +35,7 @@
 ** Detect whether or not we are building for a 32- or 64-bit (LP/LLP) 
 ** architecture. There is no reliable portable method at compile-time. 
 */ 
-#if defined (__alpha__) || defined (__ia64__) || defined (__x86_64__) \ 
+#if defined (__alpha__) || defined (__ia64__) || defined (__x86_64__) \
  || defined (_WIN64) || defined (__LP64__) || defined (__LLP64__) 
 #define TLSF_64BIT 
 #endif 
@@ -44,7 +44,7 @@
 ** gcc 3.4 and above have builtin support, specialized for architecture. 
 ** Some compilers masquerade as gcc; patchlevel test filters them out. 
 */ 
-#if defined (__GNUC__) && (__GNUC__ > 3 || (__GNUC__ == 3 && __GNUC_MINOR__ >= 4)) \ 
+#if defined (__GNUC__) && (__GNUC__ > 3 || (__GNUC__ == 3 && __GNUC_MINOR__ >= 4)) \
  && defined (__GNUC_PATCHLEVEL__) 
  
 #if defined (__SNC__) 
@@ -271,7 +271,7 @@ enum tlsf_private
  
 #define _tlsf_glue2(x, y) x ## y 
 #define _tlsf_glue(x, y) _tlsf_glue2(x, y) 
-#define tlsf_static_assert(exp) \ 
+#define tlsf_static_assert(exp) \
  typedef char _tlsf_glue(static_assert, __LINE__) [(exp) ? 1 : -1] 
  
 /* This code has been tested on 32- and 64-bit (LP/LLP) architectures. */ 
