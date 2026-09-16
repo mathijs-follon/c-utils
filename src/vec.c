@@ -1,4 +1,4 @@
-#include "vec.h"
+#include "c_utils/vec.h"
 
 #include "dynamic_array.h"
 

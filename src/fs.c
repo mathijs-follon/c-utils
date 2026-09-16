@@ -1,7 +1,7 @@
-#include "fs.h"
-#include "alloc.h"
-#include "fs_platform.h"
-#include "str.h"
+#include "c_utils/fs.h"
+#include "c_utils/alloc.h"
+#include "c_utils/fs_platform.h"
+#include "c_utils/str.h"
 
 #include <stdlib.h>
 #include <string.h>

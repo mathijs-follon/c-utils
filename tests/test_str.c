@@ -1,6 +1,6 @@
-#include "str.h"
+#include "c_utils/str.h"
 #include "test.h"
-#include "vec.h"
+#include "c_utils/vec.h"
 
 #include <string.h>
 

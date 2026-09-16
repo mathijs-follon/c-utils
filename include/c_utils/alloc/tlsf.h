@@ -1,7 +1,7 @@
 #ifndef ALLOC_TLSF_H
 #define ALLOC_TLSF_H
 
-#include "alloc.h"
+#include "c_utils/alloc.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -15,7 +15,7 @@ extern "C" {
  *     ...
  *     utils_tlsf_destroy(heap);
  *
- * Static buffer (no system malloc — STM32-friendly):
+ * Static buffer (no system malloc, STM32-friendly):
  *     alignas(8) static u8 pool[32 * 1024];
  *     UtilsTlsf heap;
  *     utils_tlsf_init_static(&heap, pool, sizeof(pool));

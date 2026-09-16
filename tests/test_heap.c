@@ -1,4 +1,4 @@
-#include "heap.h"
+#include "c_utils/heap.h"
 #include "test.h"
 
 static int cmp_int_min(const void *a, const void *b, void *ctx) {

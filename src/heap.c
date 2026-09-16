@@ -1,6 +1,6 @@
-#include "heap.h"
+#include "c_utils/heap.h"
 
-#include "alloc.h"
+#include "c_utils/alloc.h"
 
 #include <stdint.h>
 #include <string.h>

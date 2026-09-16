@@ -1,6 +1,6 @@
-#include "deque.h"
+#include "c_utils/deque.h"
 
-#include "alloc.h"
+#include "c_utils/alloc.h"
 
 #include <stdint.h>
 #include <string.h>

@@ -1,7 +1,7 @@
 #ifndef QUEUE_H
 #define QUEUE_H
 
-#include "vec.h"
+#include "c_utils/vec.h"
 
 #ifdef __cplusplus
 extern "C" {

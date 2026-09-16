@@ -1,7 +1,7 @@
 #ifndef VEC_H
 #define VEC_H
 
-#include "types.h"
+#include "c_utils/types.h"
 #include <stddef.h>
 
 #ifdef __cplusplus

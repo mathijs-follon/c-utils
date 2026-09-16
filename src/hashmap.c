@@ -1,6 +1,6 @@
-#include "hashmap.h"
+#include "c_utils/hashmap.h"
 
-#include "alloc.h"
+#include "c_utils/alloc.h"
 
 #include <stdint.h>
 #include <string.h>

@@ -1,4 +1,4 @@
-#include "deque.h"
+#include "c_utils/deque.h"
 #include "test.h"
 
 static void test_deque_ends(void) {

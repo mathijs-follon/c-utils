@@ -1,4 +1,4 @@
-#include "hashset.h"
+#include "c_utils/hashset.h"
 
 HashSet hashset_new(usize key_stride, HashMapHashFn hash, HashMapEqFn eq, void *ctx) {
     return (HashSet){hashmap_new(key_stride, 0, hash, eq, ctx)};

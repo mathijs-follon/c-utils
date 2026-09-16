@@ -1,13 +1,13 @@
-#include "alloc.h"
-#include "alloc_module.h"
+#include "c_utils/alloc.h"
+#include "c_utils/alloc_module.h"
 #include "test.h"
-#include "vec.h"
+#include "c_utils/vec.h"
 
 #include <stdlib.h>
 #include <string.h>
 
 #if defined(UTILS_ALLOC_TLSF) && UTILS_ALLOC_TLSF
-#include "alloc/tlsf.h"
+#include "c_utils/alloc/tlsf.h"
 #endif
 
 typedef struct {

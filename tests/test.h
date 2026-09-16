@@ -1,7 +1,7 @@
 #ifndef TEST_H
 #define TEST_H
 
-#include "types.h"
+#include "c_utils/types.h"
 
 #include <stdio.h>
 #include <stdlib.h>

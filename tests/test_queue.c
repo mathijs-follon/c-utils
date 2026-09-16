@@ -1,4 +1,4 @@
-#include "queue.h"
+#include "c_utils/queue.h"
 #include "test.h"
 
 static void test_queue_fifo(void) {

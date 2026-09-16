@@ -1,8 +1,8 @@
 #ifndef STR_H
 #define STR_H
 
-#include "types.h"
-#include "vec.h"
+#include "c_utils/types.h"
+#include "c_utils/vec.h"
 #include <stddef.h>
 
 #ifdef __cplusplus
@@ -235,7 +235,7 @@ bool string_append_format(String *string, const char *fmt, ...);
 void string_lower(String *string); /* ASCII only via tolower */
 void string_upper(String *string); /* ASCII only via toupper */
 /*
- * Simple Unicode case: ASCII + Latin-1 supplement letter pairs (U+00C0–U+00FF,
+ * Simple Unicode case: ASCII + Latin-1 supplement letter pairs (U+00C0-U+00FF,
  * excluding U+00D7 multiply and U+00F7 divide). Not full Unicode SpecialCasing.
  * Invalid UTF-8 bytes are left unchanged.
  */

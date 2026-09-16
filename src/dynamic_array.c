@@ -1,5 +1,5 @@
 #include "dynamic_array.h"
-#include "alloc.h"
+#include "c_utils/alloc.h"
 
 #include <stdint.h>
 #include <stdlib.h>

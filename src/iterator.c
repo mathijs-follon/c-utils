@@ -1,5 +1,5 @@
-#include "iterator.h"
-#include "alloc.h"
+#include "c_utils/iterator.h"
+#include "c_utils/alloc.h"
 
 #include <stdlib.h>
 #include <string.h>

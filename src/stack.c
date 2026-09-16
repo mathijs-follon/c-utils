@@ -1,4 +1,4 @@
-#include "stack.h"
+#include "c_utils/stack.h"
 
 Stack stack_new(usize stride) { return (Stack){vec_new(stride)}; }
 

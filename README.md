@@ -60,13 +60,13 @@ Also available: `utils::static`, `utils::shared` (if built).
 
 When utils is pulled in as a subdirectory, its tests are off by default so they do not pollute your project.
 
-Headers: `include/` (`vec.h`, `str.h`, `fs.h`, `alloc.h`, ...).
+Headers live under `include/c_utils/`: include them as `#include "c_utils/types.h"`, `#include "c_utils/vec.h"`, etc. (same whether you use a submodule, FetchContent, or an installed package).
 
 ## Allocators
 
-All library allocations go through `utils_malloc` / `utils_realloc` / `utils_free` (`alloc.h`).
+All library allocations go through `utils_malloc` / `utils_realloc` / `utils_free` (`c_utils/alloc.h`).
 
-Backends are modules (`alloc_module.h`):
+Backends are modules (`c_utils/alloc_module.h`):
 
 - **system**: libc `malloc` (default)
 - **tlsf**: Two-Level Segregated Fit (optional; good for deterministic / embedded use)

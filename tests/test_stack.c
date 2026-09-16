@@ -1,4 +1,4 @@
-#include "stack.h"
+#include "c_utils/stack.h"
 #include "test.h"
 
 static void test_stack_lifo(void) {

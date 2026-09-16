@@ -1,7 +1,7 @@
 #ifndef ALLOC_H
 #define ALLOC_H
 
-#include "types.h"
+#include "c_utils/types.h"
 #include <stddef.h>
 
 #ifdef __cplusplus

@@ -1,7 +1,7 @@
 #ifndef ALLOC_MODULE_H
 #define ALLOC_MODULE_H
 
-#include "alloc.h"
+#include "c_utils/alloc.h"
 
 #ifdef __cplusplus
 extern "C" {

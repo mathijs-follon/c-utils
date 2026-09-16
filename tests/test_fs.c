@@ -1,6 +1,6 @@
-#include "alloc.h"
-#include "fs.h"
-#include "str.h"
+#include "c_utils/alloc.h"
+#include "c_utils/fs.h"
+#include "c_utils/str.h"
 #include "test.h"
 
 #include <stdio.h>

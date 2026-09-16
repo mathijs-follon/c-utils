@@ -1,7 +1,7 @@
 #if !defined(CUSTOM_FS) && defined(_WIN32)
 
-#include "fs.h"
-#include "alloc.h"
+#include "c_utils/fs.h"
+#include "c_utils/alloc.h"
 
 #include <windows.h>
 

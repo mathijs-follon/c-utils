@@ -1,8 +1,8 @@
 #ifndef FS_H
 #define FS_H
 
-#include "str.h"
-#include "types.h"
+#include "c_utils/str.h"
+#include "c_utils/types.h"
 
 #ifdef __cplusplus
 extern "C" {

@@ -1,5 +1,5 @@
 #include "test.h"
-#include "vec.h"
+#include "c_utils/vec.h"
 
 typedef struct {
     int x;

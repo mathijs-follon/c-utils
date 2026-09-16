@@ -1,5 +1,5 @@
-#include "alloc/tlsf.h"
-#include "alloc_module.h"
+#include "c_utils/alloc/tlsf.h"
+#include "c_utils/alloc_module.h"
 
 #include <stdint.h>
 #include <stdlib.h>
@@ -166,7 +166,7 @@ void utils_tlsf_deinit(UtilsTlsf *heap) {
 void utils_tlsf_destroy(UtilsTlsf *heap) {
     if (!heap)
         return;
-    /* Static heaps must use deinit — destroy is for create(). */
+    /* Static heaps must use deinit: destroy is for create(). */
     if (heap->flags & UTILS_TLSF_STATIC)
         return;
     utils_tlsf_deinit(heap);

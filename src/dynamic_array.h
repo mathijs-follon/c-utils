@@ -1,7 +1,7 @@
 #ifndef DYNAMIC_ARRAY_H
 #define DYNAMIC_ARRAY_H
 
-#include "types.h"
+#include "c_utils/types.h"
 #include <stddef.h>
 
 #ifdef __cplusplus

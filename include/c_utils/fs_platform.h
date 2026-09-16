@@ -1,7 +1,7 @@
 #ifndef FS_PLATFORM_H
 #define FS_PLATFORM_H
 
-#include "fs.h"
+#include "c_utils/fs.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -21,8 +21,8 @@ extern "C" {
  *     #define CUSTOM_FS
  *     // or: cmake -DCUSTOM_FS=ON
  *
- *     #include "fs_platform.h"
- *     #include "alloc.h"
+ *     #include "c_utils/fs_platform.h"
+ *     #include "c_utils/alloc.h"
  *
  *     struct File { ... };
  *     struct Directory { ... };

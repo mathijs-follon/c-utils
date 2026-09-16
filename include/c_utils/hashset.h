@@ -1,7 +1,7 @@
 #ifndef HASHSET_H
 #define HASHSET_H
 
-#include "hashmap.h"
+#include "c_utils/hashmap.h"
 
 #ifdef __cplusplus
 extern "C" {

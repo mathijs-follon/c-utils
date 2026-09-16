@@ -1,6 +1,6 @@
-#include "hashmap.h"
-#include "hashset.h"
-#include "result.h"
+#include "c_utils/hashmap.h"
+#include "c_utils/hashset.h"
+#include "c_utils/result.h"
 #include "test.h"
 
 static void test_result(void) {

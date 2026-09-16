@@ -1,7 +1,7 @@
 #ifndef STACK_H
 #define STACK_H
 
-#include "vec.h"
+#include "c_utils/vec.h"
 
 #ifdef __cplusplus
 extern "C" {

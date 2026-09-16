@@ -1,10 +1,10 @@
-#include "alloc.h"
-#include "alloc_module.h"
+#include "c_utils/alloc.h"
+#include "c_utils/alloc_module.h"
 
 #include <string.h>
 
 #if defined(UTILS_ALLOC_TLSF) && UTILS_ALLOC_TLSF
-#include "alloc/tlsf.h"
+#include "c_utils/alloc/tlsf.h"
 #endif
 
 extern const UtilsAllocModule utils_alloc_module_system;

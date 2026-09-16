@@ -1,9 +1,9 @@
 #ifndef ITERATOR_H
 #define ITERATOR_H
 
-#include "queue.h"
-#include "stack.h"
-#include "vec.h"
+#include "c_utils/queue.h"
+#include "c_utils/stack.h"
+#include "c_utils/vec.h"
 
 #ifdef __cplusplus
 extern "C" {
