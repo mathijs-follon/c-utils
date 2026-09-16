@@ -20,14 +20,14 @@ Optional:
 ## Use as a git submodule
 
 ```bash
-git submodule add git@github.com:mathijs-follon/c-utils.git third_party/utils
+git submodule add git@github.com:mathijs-follon/c-utils.git third_party/c_utils
 git submodule update --init --recursive
 ```
 
 In your `CMakeLists.txt`:
 
 ```cmake
-add_subdirectory(third_party/utils)
+add_subdirectory(third_party/c_utils)
 target_link_libraries(your_app PRIVATE utils_static)  # or utils_shared
 ```
 
