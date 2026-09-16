@@ -5,20 +5,30 @@ project(utils
     LANGUAGES C
 )
 
-set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
-if(NOT EXISTS "${CMAKE_SOURCE_DIR}/compile_commands.json")
-    execute_process(
-        COMMAND ${CMAKE_COMMAND} -E create_symlink
-            "${CMAKE_BINARY_DIR}/compile_commands.json"
-            "${CMAKE_SOURCE_DIR}/compile_commands.json"
-    )
+# True when this repo is the top-level project
+# (not add_subdirectory / FetchContent).
+if(CMAKE_SOURCE_DIR STREQUAL PROJECT_SOURCE_DIR)
+    set(UTILS_IS_TOP_LEVEL ON)
+else()
+    set(UTILS_IS_TOP_LEVEL OFF)
 endif()
 
-option(BUILD_SHARED "Build a shared library" OFF)
-option(BUILD_STATIC "Build a static library" ON)
+if(UTILS_IS_TOP_LEVEL)
+    set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+    if(NOT EXISTS "${CMAKE_SOURCE_DIR}/compile_commands.json")
+        execute_process(
+            COMMAND ${CMAKE_COMMAND} -E create_symlink
+                "${CMAKE_BINARY_DIR}/compile_commands.json"
+                "${CMAKE_SOURCE_DIR}/compile_commands.json"
+        )
+    endif()
+endif()
 
-option(ENABLE_ASSERTS "Enable assertions" OFF)
-option(ENABLE_WARNINGS "Enable compiler warnings" ON)
+option(UTILS_BUILD_SHARED "Build utils shared library" OFF)
+option(UTILS_BUILD_STATIC "Build utils static library" ON)
+option(UTILS_ENABLE_ASSERTS "Enable utils assertions" OFF)
+option(UTILS_ENABLE_WARNINGS "Enable utils compiler warnings" ${UTILS_IS_TOP_LEVEL})
+option(UTILS_BUILD_TESTS "Build utils tests" ${UTILS_IS_TOP_LEVEL})
 option(CUSTOM_FS "Skip built-in fs backends; link your own fs_platform_* impl" OFF)
 
 option(UTILS_ALLOC_TLSF "Build TLSF allocator module" ON)
@@ -34,56 +44,64 @@ elseif(NOT UTILS_DEFAULT_ALLOCATOR STREQUAL "system")
 endif()
 
 # CUSTOM_FS leaves fs_platform_* undefined, so tests cannot link unless the
-# consumer provides a backend. Default testing off when CUSTOM_FS is enabled;
-# re-enable explicitly with -DBUILD_TESTING=ON after linking your backend.
-if(CUSTOM_FS)
+# consumer provides a backend. Default testing off when CUSTOM_FS is enabled.
+if(CUSTOM_FS AND UTILS_BUILD_TESTS)
     if(NOT UTILS_CUSTOM_FS_TESTING_DEFAULT_APPLIED)
-        set(BUILD_TESTING OFF CACHE BOOL "Build the testing tree." FORCE)
+        set(UTILS_BUILD_TESTS OFF CACHE BOOL "Build utils tests" FORCE)
         set(UTILS_CUSTOM_FS_TESTING_DEFAULT_APPLIED TRUE CACHE INTERNAL "")
-        message(STATUS "CUSTOM_FS=ON: BUILD_TESTING defaulted to OFF")
+        message(STATUS "CUSTOM_FS=ON: UTILS_BUILD_TESTS defaulted to OFF")
     endif()
-else()
+elseif(NOT CUSTOM_FS)
     if(UTILS_CUSTOM_FS_TESTING_DEFAULT_APPLIED)
-        set(BUILD_TESTING ON CACHE BOOL "Build the testing tree." FORCE)
+        set(UTILS_BUILD_TESTS ${UTILS_IS_TOP_LEVEL} CACHE BOOL "Build utils tests" FORCE)
         unset(UTILS_CUSTOM_FS_TESTING_DEFAULT_APPLIED CACHE)
-        message(STATUS "CUSTOM_FS=OFF: BUILD_TESTING restored to ON")
+        message(STATUS "CUSTOM_FS=OFF: UTILS_BUILD_TESTS restored")
     endif()
 endif()
 
-file(GLOB_RECURSE SOURCES CONFIGURE_DEPENDS
+file(GLOB_RECURSE UTILS_SOURCES CONFIGURE_DEPENDS
     "${CMAKE_CURRENT_SOURCE_DIR}/src/*.c"
 )
 
 if(NOT UTILS_ALLOC_TLSF)
-    list(FILTER SOURCES EXCLUDE REGEX ".*/alloc/tlsf/.*")
-    list(FILTER SOURCES EXCLUDE REGEX ".*/alloc/tlsf_heap\\.c$")
+    list(FILTER UTILS_SOURCES EXCLUDE REGEX ".*/alloc/tlsf/.*")
+    list(FILTER UTILS_SOURCES EXCLUDE REGEX ".*/alloc/tlsf_heap\\.c$")
 endif()
 
-if(NOT SOURCES)
-    message(FATAL_ERROR "No source files found")
+if(NOT UTILS_SOURCES)
+    message(FATAL_ERROR "No utils source files found")
 endif()
 
 set(UTILS_TARGETS)
 
-if(BUILD_SHARED)
-    add_library(utils_shared SHARED ${SOURCES})
+if(UTILS_BUILD_SHARED)
+    add_library(utils_shared SHARED ${UTILS_SOURCES})
+    add_library(utils::shared ALIAS utils_shared)
     list(APPEND UTILS_TARGETS utils_shared)
 endif()
 
-if(BUILD_STATIC)
-    add_library(utils_static STATIC ${SOURCES})
+if(UTILS_BUILD_STATIC)
+    add_library(utils_static STATIC ${UTILS_SOURCES})
+    add_library(utils::static ALIAS utils_static)
     list(APPEND UTILS_TARGETS utils_static)
 endif()
 
 if(NOT UTILS_TARGETS)
-    message(FATAL_ERROR "At least one of BUILD_SHARED or BUILD_STATIC must be enabled")
+    message(FATAL_ERROR "Enable UTILS_BUILD_STATIC and/or UTILS_BUILD_SHARED")
+endif()
+
+# Preferred link target for consumers: utils::utils
+if(TARGET utils_static)
+    add_library(utils::utils ALIAS utils_static)
+elseif(TARGET utils_shared)
+    add_library(utils::utils ALIAS utils_shared)
 endif()
 
 foreach(target IN LISTS UTILS_TARGETS)
     target_include_directories(${target}
         PUBLIC
             $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-            $<INSTALL_INTERFACE:include>
+            $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
     )
 
     target_compile_features(${target}
@@ -91,7 +109,7 @@ foreach(target IN LISTS UTILS_TARGETS)
             c_std_11
     )
 
-    if(ENABLE_ASSERTS)
+    if(UTILS_ENABLE_ASSERTS)
         target_compile_definitions(${target}
             PUBLIC
                 UTILS_ENABLE_ASSERTS=1
@@ -119,7 +137,6 @@ foreach(target IN LISTS UTILS_TARGETS)
             PRIVATE
                 "${CMAKE_CURRENT_SOURCE_DIR}/src/alloc/tlsf"
         )
-        # Vendored third-party TLSF is not warning-clean under our flags.
         set_source_files_properties(
             "${CMAKE_CURRENT_SOURCE_DIR}/src/alloc/tlsf/tlsf.c"
             PROPERTIES
@@ -146,21 +163,13 @@ foreach(target IN LISTS UTILS_TARGETS)
         )
     endif()
 
-    if(ENABLE_WARNINGS)
+    if(UTILS_ENABLE_WARNINGS)
         if(MSVC)
-            target_compile_options(${target}
-                PRIVATE
-                    /W4
-            )
+            target_compile_options(${target} PRIVATE /W4)
         else()
-            target_compile_options(${target}
-                PRIVATE
-                    -Wall
-                    -Wextra
-                    -Wpedantic
-                    -Wconversion
-                    -Wshadow
-        )
+            target_compile_options(${target} PRIVATE
+                -Wall -Wextra -Wpedantic -Wconversion -Wshadow
+            )
         endif()
     endif()
 
@@ -168,10 +177,20 @@ foreach(target IN LISTS UTILS_TARGETS)
         OUTPUT_NAME utils
         VERSION ${PROJECT_VERSION}
         SOVERSION ${PROJECT_VERSION_MAJOR}
+        EXPORT_NAME $<IF:$<STREQUAL:${target},utils_static>,static,shared>
     )
 endforeach()
 
+# Fix EXPORT_NAME: generator expression above is awkward. Set explicitly.
+if(TARGET utils_static)
+    set_target_properties(utils_static PROPERTIES EXPORT_NAME static)
+endif()
+if(TARGET utils_shared)
+    set_target_properties(utils_shared PROPERTIES EXPORT_NAME shared)
+endif()
+
 include(GNUInstallDirs)
+include(CMakePackageConfigHelpers)
 
 foreach(target IN LISTS UTILS_TARGETS)
     install(
@@ -180,6 +199,7 @@ foreach(target IN LISTS UTILS_TARGETS)
         ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
         LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
         RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+        INCLUDES DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
     )
 endforeach()
 
@@ -195,7 +215,28 @@ install(
     DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/utils
 )
 
-include(CTest)
-if(BUILD_TESTING)
-    add_subdirectory(tests)
+configure_package_config_file(
+    "${CMAKE_CURRENT_SOURCE_DIR}/cmake/utilsConfig.cmake.in"
+    "${CMAKE_CURRENT_BINARY_DIR}/utilsConfig.cmake"
+    INSTALL_DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/utils
+)
+
+write_basic_package_version_file(
+    "${CMAKE_CURRENT_BINARY_DIR}/utilsConfigVersion.cmake"
+    VERSION ${PROJECT_VERSION}
+    COMPATIBILITY SameMajorVersion
+)
+
+install(
+    FILES
+        "${CMAKE_CURRENT_BINARY_DIR}/utilsConfig.cmake"
+        "${CMAKE_CURRENT_BINARY_DIR}/utilsConfigVersion.cmake"
+    DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/utils
+)
+
+if(UTILS_BUILD_TESTS)
+    include(CTest)
+    if(BUILD_TESTING)
+        add_subdirectory(tests)
+    endif()
 endif()

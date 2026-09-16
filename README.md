@@ -12,26 +12,55 @@ ctest --test-dir build
 
 Optional:
 
-- `-DBUILD_SHARED=ON`
+- `-DUTILS_BUILD_SHARED=ON`
 - `-DCUSTOM_FS=ON` (your own `fs_platform_*`; tests off by default)
 - `-DUTILS_DEFAULT_ALLOCATOR=tlsf` (TLSF instead of libc malloc)
 - `-DUTILS_ALLOC_TLSF=OFF` (drop the TLSF module)
 
-## Use as a git submodule
+## Add to a CMake project
+
+Link against `utils::utils` (static by default).
+
+### Submodule
 
 ```bash
 git submodule add git@github.com:mathijs-follon/c-utils.git third_party/utils
 git submodule update --init --recursive
 ```
 
-In your `CMakeLists.txt`:
-
 ```cmake
 add_subdirectory(third_party/utils)
-target_link_libraries(your_app PRIVATE utils_static)  # or utils_shared
+target_link_libraries(your_app PRIVATE utils::utils)
 ```
 
-Headers live under `include/` (`vec.h`, `str.h`, `fs.h`, ...).
+### FetchContent
+
+```cmake
+include(FetchContent)
+FetchContent_Declare(utils
+    GIT_REPOSITORY git@github.com:mathijs-follon/c-utils.git
+    GIT_TAG main
+)
+FetchContent_MakeAvailable(utils)
+target_link_libraries(your_app PRIVATE utils::utils)
+```
+
+### Installed package
+
+```bash
+cmake --install build --prefix /path/to/prefix
+```
+
+```cmake
+find_package(utils 0.1 REQUIRED)
+target_link_libraries(your_app PRIVATE utils::utils)
+```
+
+Also available: `utils::static`, `utils::shared` (if built).
+
+When utils is pulled in as a subdirectory, its tests are off by default so they do not pollute your project.
+
+Headers: `include/` (`vec.h`, `str.h`, `fs.h`, `alloc.h`, ...).
 
 ## Allocators
 

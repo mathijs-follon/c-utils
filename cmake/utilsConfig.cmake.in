@@ -1,0 +1,12 @@
+@PACKAGE_INIT@
+
+include("${CMAKE_CURRENT_LIST_DIR}/utilsTargets.cmake")
+
+# Prefer static as utils::utils when both were installed.
+if(TARGET utils::static AND NOT TARGET utils::utils)
+    add_library(utils::utils ALIAS utils::static)
+elseif(TARGET utils::shared AND NOT TARGET utils::utils)
+    add_library(utils::utils ALIAS utils::shared)
+endif()
+
+check_required_components(utils)

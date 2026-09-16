@@ -24,7 +24,7 @@ foreach(src IN LISTS TEST_SOURCES)
     target_link_libraries(${name} PRIVATE ${UTILS_TEST_LIB})
     target_compile_features(${name} PRIVATE c_std_11)
 
-    if(ENABLE_WARNINGS)
+    if(UTILS_ENABLE_WARNINGS)
         if(MSVC)
             target_compile_options(${name} PRIVATE /W4)
         else()
